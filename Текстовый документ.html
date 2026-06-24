@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расклад Таро</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    min-height:100vh;
+    background:#0f0f17;
+    color:white;
+    font-family:Arial,sans-serif;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    margin-bottom:20px;
+    font-size:32px;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:30px;
+}
+
+button{
+    background:#6d28d9;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:16px;
+    transition:.3s;
+}
+
+button:hover{
+    transform:scale(1.05);
+    background:#7c3aed;
+}
+
+#cards{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+}
+
+.card{
+    animation:appear .5s ease;
+}
+
+.card img{
+    width:180px;
+    border-radius:12px;
+    box-shadow:0 0 20px rgba(255,255,255,.15);
+    transition:0.3s;
+}
+
+.reversed{
+    transform:rotate(180deg);
+}
+
+.info{
+    margin-top:8px;
+    font-size:14px;
+    color:#d1d5db;
+}
+
+@keyframes appear{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+@media(max-width:600px){
+    .card img{
+        width:130px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+}
+</style>
+</head>
+<body>
+
+<h1>🔮 Расклад Таро</h1>
+
+<div class="buttons">
+    <button onclick="drawCards(1)">1 карта</button>
+    <button onclick="drawCards(3)">3 карты</button>
+    <button onclick="drawCards(4)">4 карты</button>
+    <button onclick="drawCards(5)">5 карт</button>
+    <button onclick="drawCards(7)">7 карт</button>
+</div>
+
+<div id="cards"></div>
+
+<script>
+
+// Создаем колоду из 78 карт
+const deck = [];
+
+for(let i = 1; i <= 78; i++){
+    deck.push({
+        id: i,
+        image: `skins/${i}.png`
+    });
+}
+
+// Перемешивание
+function shuffle(array){
+    const arr = [...array];
+
+    for(let i = arr.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
+}
+
+// Расклад
+function drawCards(count){
+
+    const cardsContainer = document.getElementById("cards");
+    cardsContainer.innerHTML = "";
+
+    const selectedCards = shuffle(deck).slice(0, count);
+
+    selectedCards.forEach(card => {
+
+        let reversed = false;
+
+        // Только Старшие Арканы (1-22)
+        if(card.id >= 1 && card.id <= 22){
+            reversed = Math.random() < 0.5;
+        }
+
+        const cardElement = document.createElement("div");
+        cardElement.className = "card";
+
+        cardElement.innerHTML = `
+            <img
+                src="${card.image}"
+                alt="Карта ${card.id}"
+                class="${reversed ? 'reversed' : ''}"
+            >
+
+            <div class="info">
+                Карта №${card.id}
+                ${
+                    card.id <= 22
+                    ? (reversed ? " • Перевернутая" : " • Прямая")
+                    : ""
+                }
+            </div>
+        `;
+
+        cardsContainer.appendChild(cardElement);
+    });
+}
+
+</script>
+
+</body>
+</html>
