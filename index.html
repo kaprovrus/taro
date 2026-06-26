@@ -1,185 +1,363 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Расклад Таро</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Расклад Таро</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
+        body {
+            min-height: 100vh;
+            background: #0f0f17;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
 
-body{
-    min-height:100vh;
-    background:#0f0f17;
-    color:white;
-    font-family:Arial,sans-serif;
-    text-align:center;
-    padding:20px;
-}
+        h1 {
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
 
-h1{
-    margin-bottom:20px;
-    font-size:32px;
-}
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px 20px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
 
-.buttons{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:10px;
-    margin-bottom:30px;
-}
+        .controls .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
 
-button{
-    background:#6d28d9;
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    transition:.3s;
-}
+        .toggle-group {
+            display: flex;
+            background: #1e1e2f;
+            border-radius: 30px;
+            padding: 4px;
+            gap: 4px;
+            border: 1px solid #333;
+        }
 
-button:hover{
-    transform:scale(1.05);
-    background:#7c3aed;
-}
+        .toggle-group button {
+            background: transparent;
+            color: #aaa;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
 
-#cards{
-    display:flex;
-    flex-wrap:wrap;
-    justify-content:center;
-    gap:20px;
-}
+        .toggle-group button.active {
+            background: #6d28d9;
+            color: white;
+            box-shadow: 0 0 12px rgba(109, 40, 217, 0.5);
+        }
 
-.card{
-    animation:appear .5s ease;
-}
+        .toggle-group button:hover:not(.active) {
+            color: white;
+        }
 
-.card img{
-    width:180px;
-    border-radius:12px;
-    box-shadow:0 0 20px rgba(255,255,255,.15);
-    transition:0.3s;
-}
+        button {
+            background: #6d28d9;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: 0.25s;
+        }
 
-.reversed{
-    transform:rotate(180deg);
-}
+        button:hover {
+            transform: scale(1.04);
+            background: #7c3aed;
+            box-shadow: 0 0 16px rgba(109, 40, 217, 0.5);
+        }
 
-.info{
-    margin-top:8px;
-    font-size:14px;
-    color:#d1d5db;
-}
+        #cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 10px;
+        }
 
-@keyframes appear{
-    from{
-        opacity:0;
-        transform:translateY(30px);
-    }
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
+        .card {
+            animation: appear 0.5s ease;
+            max-width: 180px;
+            flex: 1 0 130px;
+        }
 
-@media(max-width:600px){
-    .card img{
-        width:130px;
-    }
+        .card img {
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 0 24px rgba(255, 255, 255, 0.08);
+            transition: 0.3s;
+            display: block;
+        }
 
-    h1{
-        font-size:24px;
-    }
-}
-</style>
+        .card img.reversed {
+            transform: rotate(180deg);
+        }
+
+        .info {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #c8cbd1;
+            letter-spacing: 0.3px;
+            line-height: 1.4;
+        }
+
+        .card-name {
+            font-weight: 600;
+            color: #fff;
+            font-size: 15px;
+        }
+
+        .card-position {
+            color: #a0a4b0;
+            font-size: 12px;
+        }
+
+        @keyframes appear {
+            from {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .card {
+                flex-basis: 120px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            .controls {
+                gap: 12px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<h1>🔮 Расклад Таро</h1>
+    <h1>🔮 Расклад Таро</h1>
 
-<div class="buttons">
-    <button onclick="drawCards(1)">1 карта</button>
-    <button onclick="drawCards(3)">3 карты</button>
-    <button onclick="drawCards(4)">4 карты</button>
-    <button onclick="drawCards(5)">5 карт</button>
-    <button onclick="drawCards(7)">7 карт</button>
-</div>
+    <div class="controls">
+        <div class="toggle-group" id="deckToggle">
+            <button class="active" data-deck="major">Старшие Арканы</button>
+            <button data-deck="full">Вся колода</button>
+        </div>
 
-<div id="cards"></div>
+        <div class="btn-group">
+            <button onclick="drawCards(1)">1 карта</button>
+            <button onclick="drawCards(3)">3 карты</button>
+            <button onclick="drawCards(4)">4 карты</button>
+            <button onclick="drawCards(5)">5 карт</button>
+            <button onclick="drawCards(7)">7 карт</button>
+        </div>
+    </div>
 
-<script>
+    <div id="cards"></div>
 
-// Создаем колоду из 78 карт
-const deck = [];
+    <script>
+        // ---------- НАЗВАНИЯ КАРТ ----------
+        const CARD_NAMES = {
+            // СТАРШИЕ АРКАНЫ (1-22)
+            1: "Башня",
+            2: "Верховная Жрица",
+            3: "Влюблённые",
+            4: "Дьявол",
+            5: "Звезда",
+            6: "Иерофан",
+            7: "Император",
+            8: "Императрица",
+            9: "Колесница",
+            10: "Луна",
+            11: "Маг",
+            12: "Мир",
+            13: "Отшельник",
+            14: "Повешенный",
+            15: "Сила",
+            16: "Смерть",
+            17: "Солнце",
+            18: "Справедливость",
+            19: "Суд",
+            20: "Умеренность",
+            21: "Колесо Фортуны",
+            22: "Шут",
 
-for(let i = 1; i <= 78; i++){
-    deck.push({
-        id: i,
-        image: `skins/${i}.png`
-    });
-}
+            // МЛАДШИЕ АРКАНЫ - ЖЕЗЛЫ (23-36)
+            23: "Двойка Жезлов",
+            24: "Тройка Жезлов",
+            25: "Четвёрка Жезлов",
+            26: "Пятёрка Жезлов",
+            27: "Шестёрка Жезлов",
+            28: "Семёрка Жезлов",
+            29: "Восьмёрка Жезлов",
+            30: "Девятка Жезлов",
+            31: "Десятка Жезлов",
+            32: "Королева Жезлов",
+            33: "Король Жезлов",
+            34: "Паж Жезлов",
+            35: "Рыцарь Жезлов",
+            36: "Туз Жезлов",
 
-// Перемешивание
-function shuffle(array){
-    const arr = [...array];
+            // МЛАДШИЕ АРКАНЫ - КУБКИ (37-50)
+            37: "Двойка Кубков",
+            38: "Тройка Кубков",
+            39: "Четвёрка Кубков",
+            40: "Пятёрка Кубков",
+            41: "Шестёрка Кубков",
+            42: "Семёрка Кубков",
+            43: "Восьмёрка Кубков",
+            44: "Девятка Кубков",
+            45: "Десятка Кубков",
+            46: "Королева Кубков",
+            47: "Король Кубков",
+            48: "Паж Кубков",
+            49: "Рыцарь Кубков",
+            50: "Туз Кубков",
 
-    for(let i = arr.length - 1; i > 0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
+            // МЛАДШИЕ АРКАНЫ - МЕЧИ (51-64)
+            51: "Двойка Мечей",
+            52: "Тройка Мечей",
+            53: "Четвёрка Мечей",
+            54: "Пятёрка Мечей",
+            55: "Шестёрка Мечей",
+            56: "Семёрка Мечей",
+            57: "Восьмёрка Мечей",
+            58: "Девятка Мечей",
+            59: "Десятка Мечей",
+            60: "Королева Мечей",
+            61: "Король Мечей",
+            62: "Паж Мечей",
+            63: "Рыцарь Мечей",
+            64: "Туз Мечей",
 
-    return arr;
-}
+            // МЛАДШИЕ АРКАНЫ - ПЕНТАКЛИ (65-78)
+            65: "Двойка Пентаклей",
+            66: "Тройка Пентаклей",
+            67: "Четвёрка Пентаклей",
+            68: "Пятёрка Пентаклей",
+            69: "Шестёрка Пентаклей",
+            70: "Семёрка Пентаклей",
+            71: "Восьмёрка Пентаклей",
+            72: "Девятка Пентаклей",
+            73: "Десятка Пентаклей",
+            74: "Королева Пентаклей",
+            75: "Король Пентаклей",
+            76: "Паж Пентаклей",
+            77: "Рыцарь Пентаклей",
+            78: "Туз Пентаклей"
+        };
 
-// Расклад
-function drawCards(count){
-
-    const cardsContainer = document.getElementById("cards");
-    cardsContainer.innerHTML = "";
-
-    const selectedCards = shuffle(deck).slice(0, count);
-
-    selectedCards.forEach(card => {
-
-        let reversed = false;
-
-        // Только Старшие Арканы (1-22)
-        if(card.id >= 1 && card.id <= 22){
-            reversed = Math.random() < 0.5;
+        // ---------- СОЗДАНИЕ КОЛОДЫ ----------
+        const FULL_DECK = [];
+        for (let i = 1; i <= 78; i++) {
+            FULL_DECK.push({
+                id: i,
+                name: CARD_NAMES[i] || `Карта ${i}`,
+                image: `skins/${i}.png`
+            });
         }
 
-        const cardElement = document.createElement("div");
-        cardElement.className = "card";
+        // Старшие Арканы: id 1..22
+        const MAJOR_DECK = FULL_DECK.filter(c => c.id >= 1 && c.id <= 22);
 
-        cardElement.innerHTML = `
-            <img
-                src="${card.image}"
-                alt="Карта ${card.id}"
-                class="${reversed ? 'reversed' : ''}"
-            >
+        // ---------- СОСТОЯНИЕ ----------
+        let useMajorOnly = true;
 
-            <div class="info">
-                Карта №${card.id}
-                ${
-                    card.id <= 22
-                    ? (reversed ? " • Перевернутая" : " • Прямая")
-                    : ""
+        // Переключатель
+        document.querySelectorAll('#deckToggle button').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('#deckToggle button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                useMajorOnly = this.dataset.deck === 'major';
+            });
+        });
+
+        // ---------- ВСПОМОГАТЕЛЬНЫЕ ----------
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // ---------- ГЛАВНАЯ ФУНКЦИЯ РАСКЛАДА ----------
+        function drawCards(count) {
+            const container = document.getElementById('cards');
+            container.innerHTML = '';
+
+            const sourceDeck = useMajorOnly ? MAJOR_DECK : FULL_DECK;
+            const shuffled = shuffle(sourceDeck);
+            const selected = shuffled.slice(0, count);
+
+            selected.forEach(card => {
+                let reversed = false;
+                if (card.id >= 1 && card.id <= 22) {
+                    reversed = Math.random() < 0.5;
                 }
-            </div>
-        `;
 
-        cardsContainer.appendChild(cardElement);
-    });
-}
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'card';
 
-</script>
+                const img = document.createElement('img');
+                img.src = card.image;
+                img.alt = card.name;
+                if (reversed) img.classList.add('reversed');
 
+                const info = document.createElement('div');
+                info.className = 'info';
+
+                const nameSpan = document.createElement('div');
+                nameSpan.className = 'card-name';
+                nameSpan.textContent = card.name;
+
+                const posSpan = document.createElement('div');
+                posSpan.className = 'card-position';
+                let posText = `№${card.id}`;
+                if (card.id <= 22) {
+                    posText += reversed ? ' • Перевернутая' : ' • Прямая';
+                }
+                posSpan.textContent = posText;
+
+                info.appendChild(nameSpan);
+                info.appendChild(posSpan);
+
+                cardDiv.appendChild(img);
+                cardDiv.appendChild(info);
+                container.appendChild(cardDiv);
+            });
+        }
+
+        // ---------- ПЕРВЫЙ РАСКЛАД ----------
+        window.addEventListener('DOMContentLoaded', () => {
+            drawCards(3);
+        });
+    </script>
 </body>
 </html>
